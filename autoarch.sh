@@ -51,7 +51,7 @@ clear
 echo "=== Disk Partitioning ==="
 lsblk
 echo "Choose the disk (e.g., vda, sda, nvme0n1):" && prompt && read DISK
-echo "Are you going to (a) use only Arch Linux or (b) dual-boot?" && prompt && read autopartconfirm
+echo "Are you going to (a) use only Arch Linux (auto partition) or (b) dual-boot (manual partition)?" && prompt && read autopartconfirm
 
 manual_part() {
     echo "Manually partition your disk using cfdisk (choose GPT table). Press ENTER to continue."
@@ -87,6 +87,12 @@ mkfs.ext4 "$ROOT_PART"
 mount "$ROOT_PART" /mnt
 mkdir -p /mnt/boot/efi
 mount "$EFI_PART" /mnt/boot/efi
+
+echo "Would you like to format your EFI partition at $EFI_PART? This is only needed if you do NOT have any other bootloaders installed. (y/n)"
+prompt && read confirmformat
+if [[ "$confirmformat" == "y" || "$confirmformat" == "Y" ]]; then 
+ mkfs.fat -F 32 "$EFI_PART"
+fi
 
 # Configure pacman
 PACMANCONF="/etc/pacman.conf"
