@@ -88,7 +88,7 @@ mount "$EFI_PART" /mnt/boot/efi
 
 # Configure pacman
 PACMANCONF="/etc/pacman.conf"
-sed -i '/^SigLevel/c\SigLevel = Never' "PACMANCONF"
+sed -i '/^SigLevel/c\SigLevel = Never' "$PACMANCONF"
 
 # Install base system
 # Configure best mirrors
