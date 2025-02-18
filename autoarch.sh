@@ -35,15 +35,18 @@ echo "Your user's password (sudo)? "
 prompt
 read userps
 
-echo "Your root password (su root)? "
+echo "Your root password (su)? "
 prompt
 read rootps
 
-echo "Your locale (Type 'en_US.UTF-8 UTF-8' WITHOUT QUOTES if you are unsure)? "
+echo "Your locale (If you are unsure, just hit Enter)? "
 prompt
 read locale
+if [[ "$locale" == "" ]]; then
+    locale="en_US.UTF-8 UTF-8"
+fi
 
-echo "Your timezone (e.g. UTC, Canada/Vancouver, Australia/Sydney, Europe/Amsterdam, etc)? "
+echo "Your timezone formatted like this: (e.g. UTC, Canada/Vancouver, Australia/Sydney, Europe/Amsterdam, etc)? "
 prompt
 read timezone
 
