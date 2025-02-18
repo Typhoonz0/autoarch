@@ -1,0 +1,7 @@
+After Installation:
+- Enable networking: sudo systemctl enable --now NetworkManager
+- Install software: sudo pacman -S <package>
+- Remove software: sudo pacman -R <package>
+- Update system: sudo pacman -Syu
+- Install GUI (e.g., GNOME): sudo pacman -S gnome 
+- Enable GUI: sudo systemctl enable --now gdm
