@@ -91,12 +91,14 @@ fi
 mkfs.ext4 "$ROOT_PART"
 mount "$ROOT_PART" /mnt
 mkdir -p /mnt/boot/efi
-mount "$EFI_PART" /mnt/boot/efi
 
 echo "Would you like to format your EFI partition at $EFI_PART? This is only needed if you do NOT have any other bootloaders installed. (y/n)"
 prompt && read confirmformat
 if [[ "$confirmformat" == "y" || "$confirmformat" == "Y" ]]; then 
  mkfs.fat -F 32 "$EFI_PART"
+ mount "$EFI_PART" /mnt/boot/efi
+else
+ mount "$EFI_PART" /mnt/boot/efi
 fi
 
 # Configure pacman
