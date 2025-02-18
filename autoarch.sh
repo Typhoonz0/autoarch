@@ -92,7 +92,11 @@ sed -i '/^SigLevel/c\SigLevel = Never' "$PACMANCONF"
 
 # Install base system
 # Configure best mirrors
-if [[ "$timezone" == *"/"* ]]; then country=${timezone%%/*} else country="$timezone" fi
+if [[ "$timezone" == *"/"* ]]; then 
+  country=${timezone%%/*} 
+else 
+  country="$timezone" 
+fi
 reflector --country "$country" --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 echo "Any additional packages? Space seperated, no commas. There is no check if the packages exist so type carefully."
 echo "Here is a good time to choose a graphical enviroment, like GNOME."
