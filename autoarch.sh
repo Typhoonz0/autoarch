@@ -90,9 +90,12 @@ mount "$EFI_PART" /mnt/boot/efi
 sed -i '/^SigLevel/c\SigLevel = Never' /etc/pacman.conf
 
 # Install base system
-reflector --country ${timezone%%/*} --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+# Configure best mirrors
+if [[ "$timezone" == *"/"* ]]; then country=${timezone%%/*} else country="$timezone" fi
+reflector --country "$country" --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 echo "Any additional packages? Space seperated, no commas. There is no check if the packages exist so type carefully."
 echo "Here is a good time to choose a graphical enviroment, like GNOME."
+echo "Or, just hit ENTER to skip."
 echo "(e.g. firefox vim gnome):" && prompt && read additional
 echo "Sit back and relax (:"
 pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional 
