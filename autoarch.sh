@@ -24,7 +24,7 @@ prompt() {
 }
 
 echo "Your username? "
-echo -ne "[\e[31muser\e[0m@\e[32mautoarch\e[0m] \e[36m$\e[0m"
+echo -ne "[\e[31muser\e[0m@\e[32mautoarch\e[0m] \e[36m$\e[0m "
 read usr
 
 echo "Your computer's hostname? "
