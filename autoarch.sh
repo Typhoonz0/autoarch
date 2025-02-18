@@ -13,6 +13,7 @@ cat <<EOF
 EOF
 }
 clear
+
 # Ensure UEFI mode
 if [[ $(cat /sys/firmware/efi/fw_platform_size) -ne 64 ]]; then
     echo "Error: System is not in UEFI mode. Exiting."
@@ -24,18 +25,22 @@ prompt() {
     echo -ne "[\e[31m$usr\e[0m@\e[32mautoarch\e[0m] \e[36m$\e[0m "
 }
 banner
-usr="autoarch"
 # User inputs
+usr="user"
 echo "Your username?" && prompt && read usr
+usr=${usr:-"user"}
 echo "Your computer's hostname?" && prompt && read hostnm
+hostnm=${hostnm:-"autoarch"}
 echo "Your user's password (sudo)?" && prompt && read userps
+userps=${userps:-"root"}
 echo "Your root password (su)?" && prompt && read rootps
+rootps=${rootps:-"root"}
 echo "Your locale (Press ENTER for: en_US.UTF-8 UTF-8)?" && prompt && read locale
 locale=${locale:-"en_US.UTF-8 UTF-8"}
 echo "Your timezone (e.g., UTC, Australia/Sydney)?" && prompt && read timezone
 timezone=${timezone:-"UTC"}
 echo "Swapfile (in GB)?" && prompt && read swapfilesize
-swapfilesize=${swapfilesize:-"1"}
+swapfilesize=${swapfilesize:-"0"}
 
 clear
 if ! ping -c 1 -W 2 8.8.8.8 >/dev/null 2>&1; then
@@ -114,10 +119,15 @@ echo "Sit back and relax (:"
 pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional 
 
 SWAP_FILE="/mnt/swapfile"  
-dd if=/dev/zero of="$SWAP_FILE" bs=1M count=$((swapfilesize * 1024)) status=progress
-chmod 600 "$SWAP_FILE"
-mkswap "$SWAP_FILE"
-swapon "$SWAP_FILE"
+if [[ "$swapfilesize" == "0" ]]; then
+  echo 
+else
+  dd if=/dev/zero of="$SWAP_FILE" bs=1M count=$((swapfilesize * 1024)) status=progress
+  chmod 600 "$SWAP_FILE"
+  mkswap "$SWAP_FILE"
+  swapon "$SWAP_FILE"
+fi
+
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Chroot configuration
