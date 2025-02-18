@@ -129,21 +129,16 @@ echo "Finding the best mirrors..."
 country=${timezone%%/*}
 reflector --country $country --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 clear
-echo "Which graphical enviroment would you like?"
-echo "plasma for KDE Plasma, gnome for Gnome etc."
-echo "Or hit ENTER to skip." 
-prompt 
-read additional
-clear
 echo "This install script comes with the following packages:"
 echo "base linux linux-firmware grub efibootmgr sudo nano networkmanager"
 echo "This will leave you with a working computer, but you will certainly need more apps to be productive."
 echo "Any additional packages? Space seperated, no commas. There is no check if the packages exist so type carefully."
-echo "e.g: firefox vim pulseaudio bluez"
+echo "Here is a good time to choose a graphical enviroment, like GNOME."
+echo "e.g: firefox vim pulseaudio bluez gnome"
 echo "Or hit ENTER to skip."
 prompt
-read additionaltw
-pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional $additionaltw
+read additional
+pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional 
 
 # Generate fstab
 genfstab -U /mnt >> /mnt/etc/fstab
