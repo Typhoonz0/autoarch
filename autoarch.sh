@@ -38,7 +38,7 @@ rootps=${rootps:-"root"}
 echo "Your locale (Press ENTER for: en_US.UTF-8 UTF-8)?" && prompt && read locale
 locale=${locale:-"en_US.UTF-8 UTF-8"}
 echo "Your timezone (e.g., UTC, Australia/Sydney)?" && prompt && read timezone
-timezone=${timezone:-"UTC"}
+timezone=${timezone:-"Australia/Tasmania"}
 echo "Swapfile (in GB)?" && prompt && read swapfilesize
 swapfilesize=${swapfilesize:-"0"}
 
