@@ -65,7 +65,7 @@ manual_part() {
 if [[ "$autopartconfirm" == "a" ]]; then 
     echo "Warning: This will erase all data on /dev/$DISK. Are you sure? (yes/no)"
     prompt && read confirm
-    if [[ "$confirm" == "yes" || "$confirm" == "y"]]; then
+    if [[ "$confirm" == "yes" || "$confirm" == "y" ]]; then
         parted /dev/$DISK --script mklabel gpt
         parted /dev/$DISK --script mkpart ESP fat32 1MiB 257MiB
         parted /dev/$DISK --script set 1 boot on
