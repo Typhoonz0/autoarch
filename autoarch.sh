@@ -130,7 +130,18 @@ After Installation:
 EOF
 
 # Unmount and finish
+
 clear
+cat <<EOF
+
+ █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝██║  ██║
+███████║██║   ██║   ██║   ██║   ██║███████║██████╔╝██║     ███████║
+██╔══██║██║   ██║   ██║   ██║   ██║██╔══██║██╔══██╗██║     ██╔══██║
+██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
+╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+
+EOF
 echo "Installation complete! Remove installation media and type 'reboot'."
 echo "After rebooting, check /home/$usr/POSTINSTALL.txt for further instructions."
 umount -R /mnt
