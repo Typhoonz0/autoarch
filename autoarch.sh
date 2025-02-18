@@ -1,6 +1,5 @@
 #!/bin/bash
-
-clear
+banner() {
 cat <<EOF
 
  █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
@@ -12,7 +11,8 @@ cat <<EOF
         === Arch Linux Automated Install Script ===
 
 EOF
-
+}
+clear
 # Ensure UEFI mode
 if [[ $(cat /sys/firmware/efi/fw_platform_size) -ne 64 ]]; then
     echo "Error: System is not in UEFI mode. Exiting."
@@ -23,7 +23,7 @@ fi
 prompt() {
     echo -ne "[\e[31m$usr\e[0m@\e[32mautoarch\e[0m] \e[36m$\e[0m "
 }
-
+banner
 usr="autoarch"
 # User inputs
 echo "Your username?" && prompt && read usr
@@ -119,29 +119,11 @@ grub-mkconfig -o /boot/grub/grub.cfg
 EOF
 
 # Post-install instructions
-touch /mnt/home/$usr/POSTINSTALL.txt
-cat <<EOF > /mnt/home/$usr/POSTINSTALL.txt
-After Installation:
-- Enable networking: sudo systemctl enable --now NetworkManager
-- Install software: sudo pacman -S <package>
-- Remove software: sudo pacman -R <package>
-- Update system: sudo pacman -Syu
-- Install GUI (e.g., GNOME): sudo pacman -S gnome && sudo systemctl enable --now gdm
-EOF
+curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/POSTINSTALL.txt -o /mnt/home/$usr/POSTINSTALL.txt
 
 # Unmount and finish
-
 clear
-cat <<EOF
-
- █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
-██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝██║  ██║
-███████║██║   ██║   ██║   ██║   ██║███████║██████╔╝██║     ███████║
-██╔══██║██║   ██║   ██║   ██║   ██║██╔══██║██╔══██╗██║     ██╔══██║
-██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
-╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
-
-EOF
+banner
 echo "Installation complete! Remove installation media and type 'reboot'."
 echo "After rebooting, check /home/$usr/POSTINSTALL.txt for further instructions."
 umount -R /mnt
