@@ -28,8 +28,8 @@ usr="autoarch"
 # User inputs
 echo "Your username?" && prompt && read usr
 echo "Your computer's hostname?" && prompt && read hostnm
-echo "Your user's password (sudo)?" && prompt && read -s userps
-echo "Your root password (su)?" && prompt && read -s rootps
+echo "Your user's password (sudo)?" && prompt && read userps
+echo "Your root password (su)?" && prompt && read rootps
 echo "Your locale (Press ENTER for: en_US.UTF-8 UTF-8)?" && prompt && read locale
 locale=${locale:-"en_US.UTF-8 UTF-8"}
 echo "Your timezone (e.g., UTC, Australia/Sydney)?" && prompt && read timezone
