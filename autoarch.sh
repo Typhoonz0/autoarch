@@ -69,6 +69,16 @@ manual_part() {
     ROOT_PART="/dev/$ROOT_PART"
 }
 
+get_partition_suffix() {
+    if [[ "$DISK" =~ ^nvme || "$DISK" =~ ^mmcblk ]]; then
+        echo "p"
+    else
+        echo ""
+    fi
+}
+
+SUFFIX=$(get_partition_suffix)
+
 if [[ "$autopartconfirm" == "a" ]]; then 
     echo "Warning: This will erase all data on /dev/$DISK. Are you sure? (yes/no)"
     prompt && read confirm
@@ -77,8 +87,8 @@ if [[ "$autopartconfirm" == "a" ]]; then
         parted /dev/$DISK --script mkpart ESP fat32 1MiB 257MiB
         parted /dev/$DISK --script set 1 boot on
         parted /dev/$DISK --script mkpart primary ext4 257MiB 100%
-        EFI_PART="/dev/${DISK}1"
-        ROOT_PART="/dev/${DISK}2"
+        EFI_PART="/dev/${DISK}${SUFFIX}1"
+        ROOT_PART="/dev/${DISK}${SUFFIX}2"
         mkfs.fat -F 32 "$EFI_PART"
     else
         manual_part
@@ -86,6 +96,7 @@ if [[ "$autopartconfirm" == "a" ]]; then
 else 
     manual_part
 fi
+
 
 # Format and mount partitions
 mkfs.ext4 "$ROOT_PART"
