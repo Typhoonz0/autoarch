@@ -9,7 +9,7 @@ banner() {
 ██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
 ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
         === Arch Linux Automated Install Script ===
-" 14 72
+" 20 60
 }
 
 prompt_input() {
@@ -52,8 +52,10 @@ if ! ping -c 1 -W 2 8.8.8.8 >/dev/null 2>&1; then
 fi
 
 clear
-whiptail --title "Disk Partitioning" --msgbox "Choose the disk (e.g., vda, sda, nvme0n1):" 8 40
-DISK=$(prompt_input "Disk Selection" "Enter disk:" "")
+
+# Display lsblk output and get the disk selection
+DISK=$(whiptail --title "Disk Selection" --menu "Choose the disk (e.g., vda, sda, nvme0n1):" 20 60 $(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | grep disk | awk '{print $1 " " $2 " " $3 " " $4}') 3>&1 1>&2 2>&3)
+
 autopartconfirm=$(whiptail --title "Partitioning Method" --menu "Choose an option:" 20 60 2 \
     a "Use only Arch Linux (auto partition)" \
     b "Dual-boot (manual partition)" \
