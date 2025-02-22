@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export NEWT_COLORS='
-root=blue,white
 window=white,gray
 border=lightgray,gray
 shadow=white,black
