@@ -143,7 +143,61 @@ echo "Here is a good time to choose a graphical enviroment, like GNOME."
 echo "Or, just hit ENTER to skip."
 echo "(e.g. firefox vim gnome fastfetch):" && prompt && read additional
 echo "Sit back and relax (:"
-pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional 
+#!/bin/bash
+
+# Function to display a message box with the installation status
+show_installing() {
+    while true; do
+        # Display an "Installing" message
+        whiptail --title "Installing" --msgbox "Installing... Please wait." 8 45
+        # Check if the installation process is still running
+        if ! pgrep -x "pacstrap" > /dev/null; then
+            break  # Exit loop if pacstrap is no longer running
+        fi
+    done
+}
+
+# Function to play Tetris while waiting for installation
+play_tetris() {
+    # Run Tetris in the background
+    autoload -Uz tetriscurses
+    tetris &
+    TETRIS_PID=$!  # Store the PID of the Tetris process
+}
+
+# Function to show dialog asking if the user wants to see the command in progress
+show_command_progress() {
+    if whiptail --title "Command Progress" --yesno "Do you want to see the command in progress?" 20 60; then
+        # User wants to see the command output
+        pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional
+    else
+        # User does not want to see the output
+        # Redirect output to /dev/null unless there is an error
+        {
+            pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional
+        } > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            # If there was an error, notify the user
+            whiptail --title "Error" --msgbox "An error occurred during installation." 8 45
+        fi
+
+        # Ask if they want to play Tetris
+        if whiptail --title "Tetris" --yesno "Do you want to play Tetris while you wait?" 20 60; then
+            play_tetris  # Start Tetris in the background
+            show_installing  # Show the installing message in a loop
+            kill "$TETRIS_PID"  # Kill the Tetris game after installation
+            whiptail --title "Done" --msgbox "Installation completed!" 8 45
+        else
+            # Show the installing message
+            show_installing
+            whiptail --title "Done" --msgbox "Installation completed!" 8 45
+        fi
+    fi
+}
+
+# Call the function to show the command progress
+show_command_progress
+
 
 SWAP_FILE="/mnt/swapfile"  
 if [[ "$swapfilesize" == "0" ]]; then
