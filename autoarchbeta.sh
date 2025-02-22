@@ -107,23 +107,30 @@ get_partition_suffix() {
 }
 
 SUFFIX=$(get_partition_suffix)
-
 if [[ "$autopartconfirm" == "a" ]]; then 
-    confirm=$(whiptail --title "Warning" --yesno "This will erase all data on /dev/$DISK. Are you sure?" 8 40)
-    if [[ $? -eq 0 ]]; then
+    # Show confirmation dialog
+    if whiptail --title "Warning" --yesno "This will erase all data on /dev/$DISK. Are you sure?" 8 40; then
+        # User confirmed, proceed with partitioning
         parted "/dev/$DISK" --script mklabel gpt
         parted "/dev/$DISK" --script mkpart ESP fat32 1MiB 257MiB
         parted "/dev/$DISK" --script set 1 boot on
         parted "/dev/$DISK" --script mkpart primary ext4 257MiB 100%
+        
+        # Define partition variables
         EFI_PART="/dev/${DISK}${SUFFIX}1"
         ROOT_PART="/dev/${DISK}${SUFFIX}2"
+        
+        # Format the EFI partition
         mkfs.fat -F 32 "$EFI_PART"
     else
+        # User chose not to proceed, call manual partitioning function
         manual_part
     fi
 else 
+    # If autopartconfirm is not "a", call manual partitioning function
     manual_part
 fi
+
 
 # Format and mount partitions
 mkfs.ext4 "$ROOT_PART"
@@ -148,22 +155,8 @@ fi
 
 reflector --country "$country" --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 additional=$(prompt_input "Additional Packages" "Any additional packages? Space separated, no commas. (e.g. firefox vim gnome fastfetch):" "")
-# installing here
-play_tetris() {
-    autoload -Uz tetriscurses
-    tetris &
-    TETRIS_PID=$!  
-}
 
-if whiptail --title "Play Tetris?" --yesno "Do you want to play Tetris while the installation is in progress?" 20 60; then
-    play_tetris  
-fi
-
-pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional
-
-if [[ -n "$TETRIS_PID" ]]; then
-    kill "$TETRIS_PID"
-fi
+pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional 
 
 SWAP_FILE="/mnt/swapfile"  
 if [[ "$swapfilesize" == "0" ]]; then
