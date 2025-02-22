@@ -1,4 +1,5 @@
 #!/bin/bash
+# hell yeah
 export NEWT_COLORS='
 window=white,gray
 border=lightgray,gray
