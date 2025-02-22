@@ -53,7 +53,7 @@ hostnm=$(prompt_input "User Input" "Your computer's hostname?" "autoarch")
 userps=$(prompt_input "User Input" "Your user's password (sudo)?" "root")
 rootps=$(prompt_input "User Input" "Your root password (su)?" "root")
 locale=$(prompt_input "User Input" "Your locale?" "en_US.UTF-8 UTF-8")
-timezone=$(prompt_input "User Input" "Your timezone?" "UTC")
+timezone=$(prompt_input "User Input" "Your timezone? Country/City e.g. Australia/Tasmania" "UTC")
 swapfilesize=$(prompt_input "User Input" "Swapfile (in GB)?" "0")
 
 clear
