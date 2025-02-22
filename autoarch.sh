@@ -47,14 +47,31 @@ if [[ $(cat /sys/firmware/efi/fw_platform_size) -ne 64 ]]; then
 fi
 
 banner
+#!/bin/bash
 
-usr=$(prompt_input "User Input" "Your username?" "user")
-hostnm=$(prompt_input "User Input" "Your computer's hostname?" "autoarch")
-userps=$(prompt_input "User Input" "Your user's password (sudo)?" "root")
-rootps=$(prompt_input "User Input" "Your root password (su)?" "root")
-locale=$(prompt_input "User Input" "Your locale?" "en_US.UTF-8 UTF-8")
-timezone=$(prompt_input "User Input" "Your timezone? Country/City e.g. Australia/Tasmania" "UTC")
-swapfilesize=$(prompt_input "User Input" "Swapfile (in GB)?" "0")
+# Input validation functions
+validate_input() { [[ "$1" =~ ^[a-zA-Z0-9._-]+$ ]] || { echo "Error: $2 contains invalid characters."; return 1; }; }
+validate_nonempty() { [[ -n "$1" ]] || { echo "Error: $2 cannot be empty."; return 1; }; }
+validate_number() { [[ "$1" =~ ^[0-9]+$ ]] || { echo "Error: $2 must be a number."; return 1; }; }
+
+# Prompt and validate input
+get_input() {
+    local var
+    while :; do
+        var=$(prompt_input "User Input" "$2" "$3")
+        "$1" "$var" "$2" && echo "$var" && break
+    done
+}
+
+usr=$(get_input validate_input "Your username?" "user")
+hostnm=$(get_input validate_input "Your computer's hostname?" "autoarch")
+userps=$(get_input validate_nonempty "Your user's password (sudo)?" "root")
+rootps=$(get_input validate_nonempty "Your root password (su)?" "root")
+locale=$(get_input validate_nonempty "Your locale? Leave as-is if unsure" "en_US.UTF-8 UTF-8")
+timezone=$(get_input validate_nonempty "Your timezone? Country/City e.g. Australia/Tasmania" "UTC")
+swapfilesize=$(get_input validate_number "Swapfile (in GB)?" "0")
+
+echo -e "User: $usr\nHostname: $hostnm\nLocale: $locale\nTimezone: $timezone\nSwapfile Size: ${swapfilesize}GB"
 
 clear
 
