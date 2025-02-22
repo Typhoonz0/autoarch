@@ -181,7 +181,15 @@ mkinitcpio -P
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
 grub-mkconfig -o /boot/grub/grub.cfg
 EOF
+# Post-install instructions
+curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/POSTINSTALL.txt -o /mnt/home/$usr/POSTINSTALL.txt
+curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh && chmod +x /mnt/home/$usr/lutil.sh
+curl -fsSL https://github.com/Typhoonz0/dots/raw/refs/heads/main/download-dots.sh -o /mnt/home/$usr/get-my-dots.sh && chmod +x /mnt/home/$usr/get-my-dots.sh
 
+systemctl --root=/mnt enable NetworkManager >/dev/null 2>&1
+systemctl --root=/mnt enable gdm >/dev/null 2>&1 # Doesn't matter if this fails, lol
+systemctl --root=/mnt enable sddm >/dev/null 2>&1 # Doesn't matter if this fails either, lol
+echo "Hey, run 'cat POSTINSTALL.txt' without quotes. To disable this message, delete this line in your /home/user/.bashrc" >> /mnt/home/$usr/.bashrc
 whiptail --title "Arch Linux Automated Install Script" --msgbox "
  █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
 ██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝██║  ██║
@@ -190,10 +198,4 @@ whiptail --title "Arch Linux Automated Install Script" --msgbox "
 ██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
 ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
 Installation finished! Check postinstall.txt after reboot. Click OK, remove installation media and type 'reboot'." 20 72
-# Post-install instructions
-curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/POSTINSTALL.txt -o /mnt/home/$usr/POSTINSTALL.txt
-curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh
-curl -fsSL https://github.com/Typhoonz0/dots/raw/refs/heads/main/download-dots.sh -o /mnt/home/$usr/get-my-dots.sh
-
-clear
 
