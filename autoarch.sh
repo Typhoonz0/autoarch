@@ -78,22 +78,36 @@ get_partition_suffix() {
 }
 
 SUFFIX=$(get_partition_suffix)
+#!/bin/bash
 
-if [[ "$autopartconfirm" == "a" ]]; then 
-    echo "Warning: This will erase all data on /dev/$DISK. Are you sure? (yes/no)"
-    prompt && read confirm
-    if [[ "$confirm" == "yes" || "$confirm" == "y" ]]; then
+# Function to display a warning message using whiptail and get confirmation
+confirm_action() {
+    whiptail --title "Warning" --yesno "This will erase all data on /dev/$DISK. Are you sure you want to continue?" 20 60
+    return $?  # Return the exit status of whiptail
+}
+
+# Check if autopartconfirm is set to "a"
+if [[ "$autopartconfirm" == "a" ]]; then
+    # Call the confirmation function
+    if confirm_action; then
+        # If confirmed, proceed with partitioning
         parted /dev/$DISK --script mklabel gpt
         parted /dev/$DISK --script mkpart ESP fat32 1MiB 257MiB
         parted /dev/$DISK --script set 1 boot on
         parted /dev/$DISK --script mkpart primary ext4 257MiB 100%
+        
+        # Define partition variables
         EFI_PART="/dev/${DISK}${SUFFIX}1"
         ROOT_PART="/dev/${DISK}${SUFFIX}2"
+        
+        # Format the EFI partition
         mkfs.fat -F 32 "$EFI_PART"
     else
+        # If canceled, call manual_part function
         manual_part
     fi
 else 
+    # If autopartconfirm is not "a", call manual_part function
     manual_part
 fi
 
