@@ -145,37 +145,25 @@ if [[ "$timezone" == *"/"* ]]; then
 else 
     country="$timezone" 
 fi
+
 reflector --country "$country" --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-#!/bin/bash
-
-# Function to prompt for input using whiptail
-prompt_input() {
-    local title="$1"
-    local message="$2"
-    local default_value="$3"
-
-    # Use whiptail to get input from the user
-    response=$(whiptail --title "$title" --inputbox "$message" 20 60 "$default_value" 3>&1 1>&2 2>&3)
-
-    # Check exit status of whiptail
-    if [ $? -eq 0 ]; then
-        echo "$response"  # Return the response
-    else
-        echo ""  # Return an empty string if canceled
-    fi
+additional=$(prompt_input "Additional Packages" "Any additional packages? Space separated, no commas. (e.g. firefox vim gnome fastfetch):" "")
+# installing here
+play_tetris() {
+    autoload -Uz tetriscurses
+    tetris &
+    TETRIS_PID=$!  
 }
 
-# Prompt for additional packages
-additional=$(prompt_input "Additional Packages" "Any additional packages? Space separated, no commas. (e.g. firefox vim gnome fastfetch):" "")
+if whiptail --title "Play Tetris?" --yesno "Do you want to play Tetris while the installation is in progress?" 20 60; then
+    play_tetris  
+fi
 
-# Use pacstrap to install base system and additional packages
 pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional
 
-# Confirm the action
-if [ -n "$additional" ]; then
-    whiptail --title "Packages Installed" --msgbox "Installed the following additional packages: $additional" 8 45
-else
-    whiptail --title "No Additional Packages" --msgbox "No additional packages were specified." 8 45
+if [[ -n "$TETRIS_PID" ]]; then
+    kill "$TETRIS_PID"
+fi
 
 SWAP_FILE="/mnt/swapfile"  
 if [[ "$swapfilesize" == "0" ]]; then
