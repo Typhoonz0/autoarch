@@ -169,7 +169,8 @@ else
 fi
 
 genfstab -U /mnt >> /mnt/etc/fstab
-
+rm /mnt/etc/pacman.conf
+cp /etc/pacman.conf /mnt/etc/pacman.conf
 # Chroot configuration
 arch-chroot /mnt /bin/bash <<EOF
 ln -sf /usr/share/zoneinfo/$timezone /etc/localtime
