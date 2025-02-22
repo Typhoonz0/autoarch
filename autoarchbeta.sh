@@ -9,7 +9,8 @@ banner() {
 ██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
 ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
         === Arch Linux Automated Install Script ===
-" 20 60
+                   Press ENTER to start...
+" 20 72
 }
 
 prompt_input() {
@@ -37,8 +38,8 @@ usr=$(prompt_input "User Input" "Your username?" "user")
 hostnm=$(prompt_input "User Input" "Your computer's hostname?" "autoarch")
 userps=$(prompt_input "User Input" "Your user's password (sudo)?" "root")
 rootps=$(prompt_input "User Input" "Your root password (su)?" "root")
-locale=$(prompt_input "User Input" "Your locale (Press ENTER for: en_US.UTF-8 UTF-8)?" "en_US.UTF-8 UTF-8")
-timezone=$(prompt_input "User Input" "Your timezone (e.g., UTC, Australia/Tasmania)?" "Australia/Tasmania")
+locale=$(prompt_input "User Input" "Your locale?" "en_US.UTF-8 UTF-8")
+timezone=$(prompt_input "User Input" "Your timezone (e.g., UTC, Australia/Tasmania)?" "UTC")
 swapfilesize=$(prompt_input "User Input" "Swapfile (in GB)?" "0")
 
 clear
@@ -53,8 +54,35 @@ fi
 
 clear
 
-# Display lsblk output and get the disk selection
-DISK=$(whiptail --title "Disk Selection" --menu "Choose the disk (e.g., vda, sda, nvme0n1):" 20 60 $(lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | grep disk | awk '{print $1 " " $2 " " $3 " " $4}') 3>&1 1>&2 2>&3)
+
+# Collect disk options from lsblk, filtering for disks
+DISK_OPTIONS=$(lsblk -o NAME,SIZE,TYPE | grep disk | awk '{print $1 " " $2}')
+
+# Check if any disks were found
+if [ -z "$DISK_OPTIONS" ]; then
+    whiptail --title "Disk Selection" --msgbox "No disks found." 8 45
+    exit 1
+fi
+
+# Prepare the options for whiptail in the correct format
+MENU_OPTIONS=()
+while IFS= read -r line; do
+    NAME=$(echo "$line" | awk '{print $1}')
+    SIZE=$(echo "$line" | awk '{print $2}')
+    MENU_OPTIONS+=("$NAME" "$NAME ($SIZE)")  # Pair of name and description
+done <<< "$DISK_OPTIONS"
+
+# Check if MENU_OPTIONS array is empty
+if [ ${#MENU_OPTIONS[@]} -eq 0 ]; then
+    whiptail --title "Disk Selection" --msgbox "No disks available for selection." 8 45
+    exit 1
+fi
+
+# Call whiptail directly with formatted options
+DISK=$(whiptail --title "Disk Selection" \
+    --menu "Choose the disk:" \
+    20 60 10 \
+    "${MENU_OPTIONS[@]}" 3>&1 1>&2 2>&3)
 
 autopartconfirm=$(whiptail --title "Partitioning Method" --menu "Choose an option:" 20 60 2 \
     a "Use only Arch Linux (auto partition)" \
@@ -102,14 +130,11 @@ mkfs.ext4 "$ROOT_PART"
 mount "$ROOT_PART" /mnt
 mkdir -p /mnt/boot/efi
 
-confirmformat=$(whiptail --title "Format EFI Partition" --yesno "Would you like to format your EFI partition at $EFI_PART? This is only needed if you do NOT have any other bootloaders installed." 8 40)
-if [[ $? -eq 0 ]]; then 
- mkfs.fat -F 32 "$EFI_PART"
- mount "$EFI_PART" /mnt/boot/efi
-else
- mount "$EFI_PART" /mnt/boot/efi
+if whiptail --title "Format EFI Partition" --yesno "Would you like to format your EFI partition at $EFI_PART? This is only needed if you do NOT have any other bootloaders installed." 20 30; then
+     mkfs.fat -F 32 "$EFI_PART"
 fi
 
+mount "$EFI_PART" /mnt/boot/efi
 # Configure pacman
 PACMANCONF="/etc/pacman.conf"
 sed -i '/^SigLevel/c\SigLevel = Never' "$PACMANCONF"
@@ -121,9 +146,36 @@ else
     country="$timezone" 
 fi
 reflector --country "$country" --latest 5 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+#!/bin/bash
 
+# Function to prompt for input using whiptail
+prompt_input() {
+    local title="$1"
+    local message="$2"
+    local default_value="$3"
+
+    # Use whiptail to get input from the user
+    response=$(whiptail --title "$title" --inputbox "$message" 20 60 "$default_value" 3>&1 1>&2 2>&3)
+
+    # Check exit status of whiptail
+    if [ $? -eq 0 ]; then
+        echo "$response"  # Return the response
+    else
+        echo ""  # Return an empty string if canceled
+    fi
+}
+
+# Prompt for additional packages
 additional=$(prompt_input "Additional Packages" "Any additional packages? Space separated, no commas. (e.g. firefox vim gnome fastfetch):" "")
-pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional 
+
+# Use pacstrap to install base system and additional packages
+pacstrap -K /mnt base grub efibootmgr linux linux-firmware sudo nano networkmanager $additional
+
+# Confirm the action
+if [ -n "$additional" ]; then
+    whiptail --title "Packages Installed" --msgbox "Installed the following additional packages: $additional" 8 45
+else
+    whiptail --title "No Additional Packages" --msgbox "No additional packages were specified." 8 45
 
 SWAP_FILE="/mnt/swapfile"  
 if [[ "$swapfilesize" == "0" ]]; then
@@ -156,15 +208,16 @@ EOF
 
 # Post-install instructions
 curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/POSTINSTALL.txt -o /mnt/home/$usr/POSTINSTALL.txt
-
-# Unmount and finish
-getlutil=$(whiptail --title "lutil" --yesno "Would you like to use lutil (my custom tool) to download additional pacman and yay packages?" 8 40)
-if [[ $? -eq 0 ]]; then
-  curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh
-  arch-chroot /mnt /bin/bash 
-  bash /home/$usr/lutil.sh
-fi
+curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh
+curl -fsSL https://github.com/Typhoonz0/dots/raw/refs/heads/main/download-dots.sh -o /mnt/home/$usr/get-my-dots.sh
 
 clear
 banner
-whiptail --title "Installation Complete" --msgbox "Remove installation media and type 'reboot'.\nAfter rebooting, check /home/$usr/POSTINSTALL.txt for further instructions." 8 40
+whiptail --title "Installation Complete" --msgbox "
+ █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝██║  ██║
+███████║██║   ██║   ██║   ██║   ██║███████║██████╔╝██║     ███████║
+██╔══██║██║   ██║   ██║   ██║   ██║██╔══██║██╔══██╗██║     ██╔══██║
+██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
+╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+Installation finished! Remove installation media and type 'reboot'. After rebooting, check /home/$usr/POSTINSTALL.txt for further instructions." 20 72
