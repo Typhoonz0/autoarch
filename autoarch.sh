@@ -30,6 +30,7 @@ banner() {
 ██║  ██║╚██████╔╝   ██║   ╚██████╔╝██║  ██║██║  ██║╚██████╗██║  ██║
 ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
         === Arch Linux Automated Install Script ===
+    NOTE: THIS SCRIPT DOES NOT CHECK FOR INPUT ERRORS. BE CAREFUL!
                  Press ENTER to start..." 20 72
 }
 
@@ -46,29 +47,16 @@ if [[ $(cat /sys/firmware/efi/fw_platform_size) -ne 64 ]]; then
 fi
 
 banner
-#!/bin/bash
 
-# Input validation functions
-validate_input() { [[ "$1" =~ ^[a-zA-Z0-9._-]+$ ]] || { echo "Error: $2 contains invalid characters."; return 1; }; }
-validate_nonempty() { [[ -n "$1" ]] || { echo "Error: $2 cannot be empty."; return 1; }; }
-validate_number() { [[ "$1" =~ ^[0-9]+$ ]] || { echo "Error: $2 must be a number."; return 1; }; }
 
-# Prompt and validate input
-get_input() {
-    local var
-    while :; do
-        var=$(prompt_input "User Input" "$2" "$3")
-        "$1" "$var" "$2" && echo "$var" && break
-    done
-}
+usr=$(prompt_input "User Input" "Your username?" "user")
+hostnm=$(prompt_input "User Input" "Your computer's hostname?" "autoarch")
+userps=$(prompt_input "User Input" "Your user's password (sudo)?" "root")
+rootps=$(prompt_input "User Input" "Your root password (su)?" "root")
+locale=$(prompt_input "User Input" "Your locale? Leave as-is if unsure" "en_US.UTF-8 UTF-8")
+timezone=$(prompt_input "User Input" "Your timezone? Country/City e.g. Australia/Tasmania" "UTC")
+swapfilesize=$(prompt_input "User Input" "Swapfile (in GB)?" "0")
 
-usr=$(get_input validate_input "Your username?" "user")
-hostnm=$(get_input validate_input "Your computer's hostname?" "autoarch")
-userps=$(get_input validate_nonempty "Your user's password (sudo)?" "root")
-rootps=$(get_input validate_nonempty "Your root password (su)?" "root")
-locale=$(get_input validate_nonempty "Your locale? Leave as-is if unsure" "en_US.UTF-8 UTF-8")
-timezone=$(get_input validate_nonempty "Your timezone? Country/City e.g. Australia/Tasmania" "UTC")
-swapfilesize=$(get_input validate_number "Swapfile (in GB)?" "0")
 
 echo -e "User: $usr\nHostname: $hostnm\nLocale: $locale\nTimezone: $timezone\nSwapfile Size: ${swapfilesize}GB"
 
@@ -151,8 +139,10 @@ esac
 
 mount "$ROOT_PART" /mnt
 mkdir -p /mnt/boot/efi
-if whiptail --title "Format EFI Partition" --yesno "Would you like to format your EFI partition at $EFI_PART? This is only needed if you do NOT have any other bootloaders installed." 20 30; then
-     mkfs.fat -F 32 "$EFI_PART"
+if whiptail --title "Format EFI Partition" --yesno "Would you like to format your EFI partition at $EFI_PART? Click 'yes' if you only plan on using Arch Linux, click 'no' if you want to use Arch Linux alongside other existing operating systems." 20 30; then
+     if whiptail --title "Are you sure?" --yesno "Are you sure you want to format $EFI_PART? If you plan on using existing operating systems on this disk, click no. Otherwise, click yes." 20 30; then
+         mkfs.fat -F 32 "$EFI_PART"
+     fi
 fi
 mount "$EFI_PART" /mnt/boot/efi
 
