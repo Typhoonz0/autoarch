@@ -169,6 +169,7 @@ prompt && read getlutil
 if [[ "$getlutil" == "y" ]]; then
   curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh
   arch-chroot /mnt /bin/bash 
+  chmod +x lutil.sh
   bash /home/$usr/lutil.sh
 fi
 
