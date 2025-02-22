@@ -1,5 +1,28 @@
 #!/bin/bash
 
+export NEWT_COLORS='
+root=purple,white
+window=white,gray
+border=lightgray,gray
+shadow=white,black
+button=black,cyan
+actbutton=black,cyan
+compactbutton=lightgray,black
+title=cyan,gray
+roottext=cyan,black
+textbox=lightgray,gray
+acttextbox=gray,white
+entry=black,lightgray
+disentry=gray,black
+checkbox=black,lightgray
+actcheckbox=black,green
+emptyscale=,lightgray
+fullscale=,grey
+listbox=black,lightgray
+actlistbox=lightgray,black
+actsellistbox=black,cyan
+'
+
 banner() {
     whiptail --title "Arch Linux Automated Install Script" --msgbox "
  █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
