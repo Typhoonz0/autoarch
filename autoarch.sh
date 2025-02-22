@@ -162,16 +162,7 @@ EOF
 
 # Post-install instructions
 curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/POSTINSTALL.txt -o /mnt/home/$usr/POSTINSTALL.txt
-
-# Unmount and finish
-echo "Would you like to use lutil (my custom tool) to download additional pacman and yay packages? (y/n)"
-prompt && read getlutil
-if [[ "$getlutil" == "y" ]]; then
-  curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh
-  arch-chroot /mnt /bin/bash 
-  chmod +x lutil.sh
-  bash /home/$usr/lutil.sh
-fi
+curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh
 
 clear
 banner
