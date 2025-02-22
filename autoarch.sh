@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# autoarch!
 export NEWT_COLORS='
 window=white,gray
 border=lightgray,gray
