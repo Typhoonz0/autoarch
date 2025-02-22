@@ -1,7 +1,9 @@
 After Installation:
 - Enable networking: sudo systemctl enable --now NetworkManager
-- Install software: sudo pacman -S <package>
-- Remove software: sudo pacman -R <package>
-- Update system: sudo pacman -Syu
-- Install GUI (e.g., GNOME): sudo pacman -S gnome 
-- Enable GUI: sudo systemctl enable --now gdm
+- Enable GUI: sudo systemctl enable --now gdm (gnome for example)
+
+lutil.sh: (highly recommend)
+Download various packages for development, media, office and fun in a tui interface
+
+get-my-dots.sh: (If you don't know what Hyprland is/don't want to run Hyprland, don't use this)
+My hyprland, zsh, neovim dotfile setup script, very simple  
