@@ -189,7 +189,7 @@ curl -fsSL https://github.com/Typhoonz0/dots/raw/refs/heads/main/download-dots.s
 systemctl --root=/mnt enable NetworkManager >/dev/null 2>&1
 systemctl --root=/mnt enable gdm >/dev/null 2>&1 # Doesn't matter if this fails, lol
 systemctl --root=/mnt enable sddm >/dev/null 2>&1 # Doesn't matter if this fails either, lol
-echo "Hey, run 'cat POSTINSTALL.txt' without quotes. To disable this message, delete this line in your /home/user/.bashrc" >> /mnt/home/$usr/.bashrc
+echo "echo Hey, run 'cat POSTINSTALL.txt' without quotes. To disable this message, delete this line in your /home/user/.bashrc" >> /mnt/home/$usr/.bashrc
 whiptail --title "Arch Linux Automated Install Script" --msgbox "
  █████╗ ██╗   ██╗████████╗ ██████╗  █████╗ ██████╗  ██████╗██╗  ██╗
 ██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔══██╗██╔══██╗██╔════╝██║  ██║
