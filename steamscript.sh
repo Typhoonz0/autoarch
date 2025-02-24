@@ -103,6 +103,9 @@ if whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better v
   tar -xf $tarball_name -C ~/.steam/root/compatibilitytools.d/
   echo "All done :)"
   if  whiptail --title "Get ProtonUp" --yesno --yes-button "Flatpak" --no-button "Yay" "Download ProtonUp (needed for ProtonGE) through flatpak or through yay?" 20 30; then 
+    if ! flatpak >/dev/null 2>&1; then
+      sudo pacman -S flatpak
+    fi
     flatpak install flathub net.davidotek.pupgui2
     if  whiptail --title "Run ProtonUp" --yesno --yes-button "Continue" --no-button "" "In this next menu, choose 'Add Version' > 'ProtonGE' > Newest version and make sure it is global." 20 30; then 
       flatpak run net.davidotek.pupgui2 &
