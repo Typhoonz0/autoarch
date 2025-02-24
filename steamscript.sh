@@ -114,14 +114,8 @@ if whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better v
   fi
 fi
 
-if whiptail --title "Run Steam" --yesno --yes-button "Continue" --no-button "" "Sign in through Steam, click Steam > Settings > Compatibility > Choose ProtonGE if you installed it, otherwise choose the newst Proton" 20 30; then
+if whiptail --title "Run Steam" --yesno --yes-button "Continue" --no-button "" "Sign in through Steam, click Steam > Settings > Compatibility > Choose ProtonGE if you installed it, otherwise choose the newst Proton. Your install is finished!" 20 30; then
   steam
 else
   steam
 fi
-
-if  whiptail --title "Run Steam"  --yesno --no-button "" "Sign in through Steam, click Steam > Settings > Compatibility > Choose ProtonGE if you installed it, otherwise choose the newst Proton" 20 30; then 
-  protonup-qt & 
-fi
-
-
