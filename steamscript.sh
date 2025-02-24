@@ -107,14 +107,8 @@ if whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better v
       sudo pacman -S flatpak
     fi
     flatpak install flathub net.davidotek.pupgui2
-    if  whiptail --title "Run ProtonUp" --yesno --yes-button "Continue" --no-button "" "In this next menu, choose 'Add Version' > 'ProtonGE' > Newest version and make sure it is global." 20 30; then 
-      flatpak run net.davidotek.pupgui2 &
-    fi
   else
     yay -S protonup-qt
-    if  whiptail --title "Run ProtonUp" --yesno --yes-button "Continue" --no-button "" "" 20 30; then 
-      protonup-qt & 
-    fi
   fi
 fi
 
