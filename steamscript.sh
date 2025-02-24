@@ -73,7 +73,7 @@ pconf="/etc/pacman.conf"
 sudo sed -i '/#\[multilib\]/s/^#//' $pconf
 sudo sed -i '/#Include = \/etc\/pacman.d\/mirrorlist/s/^#//' $pconf
 sudo pacman -Sy
-sudo pacman -S steam ttf-liberation xdg-desktop-portal
+sudo pacman -S --noconfirm steam ttf-liberation xdg-desktop-portal
 
 if whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better version of Proton that supports more games and I recommend it!" 20 30; then
   rm -rf /tmp/proton-ge-custom
@@ -109,13 +109,13 @@ if whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better v
     fi
   else
     yay -S protonup-qt
-    if  whiptail --title "Run ProtonUp" --yesno --yes-button "Continue" --no-button "" "In this next menu, choose 'Add Version' > 'ProtonGE' > Newest version and make sure it is global." 20 30; then 
+    if  whiptail --title "Run ProtonUp" --yesno --yes-button "Continue" --no-button "" "" 20 30; then 
       protonup-qt & 
     fi
   fi
 fi
 
-if whiptail --title "Run Steam" --yesno --yes-button "Continue" --no-button "" "Sign in through Steam, click Steam > Settings > Compatibility > Choose ProtonGE if you installed it, otherwise choose the newst Proton. Your install is finished!" 20 30; then
+if whiptail --title "Run Steam" --yesno --yes-button "Continue" --no-button "" "Sign in through Steam, click Steam > Settings > Compatibility > Enable Steam Play, Restart. Choose the newest Proton, or if you downloaded Proton-GE, open ProtonUp-QT, choose 'Add Version' > 'ProtonGE' > Newest version, restart steam, and add Proton-GE. Your install is finished!" 20 30; then
   steam
 else
   steam
