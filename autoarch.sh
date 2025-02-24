@@ -185,7 +185,7 @@ EOF
 curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/POSTINSTALL.txt -o /mnt/home/$usr/POSTINSTALL.txt
 curl -fsSL https://github.com/Typhoonz0/lutil/raw/refs/heads/main/lutil.sh -o /mnt/home/$usr/lutil.sh && chmod +x /mnt/home/$usr/lutil.sh
 curl -fsSL https://github.com/Typhoonz0/dots/raw/refs/heads/main/download-dots.sh -o /mnt/home/$usr/get-my-dots.sh && chmod +x /mnt/home/$usr/get-my-dots.sh
-
+curl -fsSL https://github.com/Typhoonz0/autoarch/raw/refs/heads/main/steamscript.sh -o /mnt/home/$usr/autosteam.sh && chmod +x /mnt/home/$usr/autosteam.sh
 systemctl --root=/mnt enable NetworkManager >/dev/null 2>&1
 systemctl --root=/mnt enable gdm >/dev/null 2>&1 # Doesn't matter if this fails, lol
 systemctl --root=/mnt enable sddm >/dev/null 2>&1 # Doesn't matter if this fails either, lol
