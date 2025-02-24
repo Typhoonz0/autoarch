@@ -42,8 +42,6 @@ banner() {
     " 20 83
 }
 
-if ! whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better version of Proton that supports more games and I recommend it!" 20 30; then
-
 prompt_input() {
     response=$(whiptail --title "$1" --inputbox "$2" 0 0 "$3" --ok-button "OK" --nocancel 3>&1 1>&2 2>&3)
     echo "$response"
