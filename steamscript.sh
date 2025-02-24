@@ -43,17 +43,12 @@ banner() {
     " 20 83
 }
 
+banner
+
 prompt_input() {
     response=$(whiptail --title "$1" --inputbox "$2" 0 0 "$3" --ok-button "OK" --nocancel 3>&1 1>&2 2>&3)
     echo "$response"
 }
-
-sudo cp /etc/pacman.conf /etc/pacman.conf.bak
-pconf="/etc/pacman.conf"
-sudo sed -i '/#\[multilib\]/s/^#//' $pconf
-sudo sed -i '/#Include = \/etc\/pacman.d\/mirrorlist/s/^#//' $pconf
-sudo pacman -Sy
-sudo pacman -S steam ttf-liberation xdg-desktop-portal
 
 GPU_VENDOR=$(prompt_input "Graphics Card" "Enter your graphics card vendor in lowercase (intel, amd, nvidia):" "")
 
@@ -72,6 +67,13 @@ case "$GPU_VENDOR" in
         exit 1
         ;;
 esac
+
+sudo cp /etc/pacman.conf /etc/pacman.conf.bak
+pconf="/etc/pacman.conf"
+sudo sed -i '/#\[multilib\]/s/^#//' $pconf
+sudo sed -i '/#Include = \/etc\/pacman.d\/mirrorlist/s/^#//' $pconf
+sudo pacman -Sy
+sudo pacman -S steam ttf-liberation xdg-desktop-portal
 
 if whiptail --title "Get ProtonGE" --yesno "Download Proton GE? It is a better version of Proton that supports more games and I recommend it!" 20 30; then
   rm -rf /tmp/proton-ge-custom
