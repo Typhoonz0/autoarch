@@ -7,6 +7,9 @@ Download various packages for development, media, office and fun in a tui interf
 get-my-dots.sh: (If you don't know what Hyprland is/don't want to run Hyprland, don't use this)
 My hyprland, zsh, neovim dotfile setup script, very simple  
 
+autosteam.sh (If you want to play games on Linux, highly recommend)
+Downloads the correct graphics drivers, steam, and optional compatibility tools to play Steam games on Linux
+
 - Or, you don't have to use lutil to download packages.
 - Downloading a package is easy - just run sudo pacman -S package-name
 - If you haven't already, download a desktop enviroment like gnome or plasma
