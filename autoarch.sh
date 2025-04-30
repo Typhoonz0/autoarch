@@ -70,8 +70,8 @@ else
 fi
 
 mkfs.ext4 "$rootpart"
-mount "$ROOT_PART" /mnt
-mount --mkdir "$EFI_PART" /mnt/boot/efi
+mount "$rootpart" /mnt
+mount --mkdir "$efipart" /mnt/boot/efi
 
 PACMANCONF="/etc/pacman.conf"
 sed -i '/^SigLevel/c\SigLevel = Never' "$PACMANCONF"
