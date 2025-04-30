@@ -46,7 +46,7 @@ timezone=$(prompt_input "Timezone" "Enter your timezone (e.g., Australia/Tasmani
 swapfilesize=$(prompt_input "Swapfile Size" "Enter swapfile size in GB:" "0")
 
 mapfile -t entries < <(lsblk -o NAME,SIZE,TYPE -n | awk '$3=="disk" {gsub(/[[:graph:]]*─/, "", $1); print $1 " (" $2 ")"}')
-disk=$(whiptail --title "Select Disk" --menu "Choose a disk:" 20 60 10 $(for e in "${entries[@]}"; do echo "$e"; done) 3>&1 1>&2 2>&3) && echo "Selected: $choice"
+disk=$(whiptail --title "Select Disk" --menu "Choose a disk:" 20 60 10 $(for e in "${entries[@]}"; do echo "$e"; done) 3>&1 1>&2 2>&3) && echo "Selected: $disk"
 
 if ! whiptail --title "Partitioning" --yesno "No = Auto Partition /dev/$disk | Yes = Manual Partition" 8 60; then
   parted "/dev/$disk" --script mklabel gpt
