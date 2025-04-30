@@ -59,7 +59,7 @@ if ! whiptail --title "Partitioning" --yesno "No = Auto Partition /dev/$disk | Y
 else
   whiptail --title "Manual Partitioning" --msgbox "You'll now partition using cfdisk. Press ENTER to continue." 8 50
   cfdisk "/dev/$disk"
-  mapfile -t parts < <(lsblk -o NAME,SIZE,TYPE -n | awk -v d="$disk" '$3=="part" && $1 ~ "^"d {gsub(/[[:graph:]]*─/, "", $1); print $1 " (" $2 ")"}')
+  mapfile -t entries < <(lsblk -o NAME,SIZE,TYPE -n | awk '$3=="part" {gsub(/[[:graph:]]*─/, "", $1); print $1 " (" $2 ")"}')
   rootpart=$(whiptail --title "Select Root Partition" --menu "Choose root partition:" 20 60 10 $(for p in "${parts[@]}"; do echo "$p"; done) 3>&1 1>&2 2>&3)
   efipart=$(whiptail --title "Select EFI Partition" --menu "Choose EFI partition:" 20 60 10 $(for p in "${parts[@]}"; do echo "$p"; done) 3>&1 1>&2 2>&3)
   rootpart="/dev/$rootpart"
