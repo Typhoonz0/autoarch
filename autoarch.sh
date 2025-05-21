@@ -2,8 +2,8 @@
 
 echo "=== Checking if you can run ArchFR... ==="
 
-# Exit if not in Arch ISO
-#[ -d /run/archiso ] || { echo "You have already installed Arch! Ignore"; exit 1; }
+#Exit if not in Arch ISO
+[ -d /run/archiso ] || { echo "You have already installed Arch! Ignore"; exit 1; }
 
 # Exit if not root
 [ "$(id -u)" -eq 0 ] || { echo "Please run this script with sudo or as the root user."; exit 1; }
@@ -137,8 +137,8 @@ locale-gen
 echo "LANG=${locale%% *}" > /etc/locale.conf
 echo "$host" > /etc/hostname
 echo "root:$rootpass" | chpasswd
-useradd -m -G wheel $user
-echo "$user:$userpass" | chpasswd
+useradd -m -G wheel $username
+echo "$username:$userpass" | chpasswd
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 mkinitcpio -P
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
