@@ -121,6 +121,7 @@ useradd -m -G wheel $username
 echo "$username:$userpass" | chpasswd
 sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 sed -i 's|^ExecStart=.*|ExecStart=-/sbin/agetty -a '"$username"' - \${TERM}|' /etc/systemd/system/getty.target.wants/getty@tty1.service
+cat /etc/systemd/system/getty.target.wants/getty@tty1.service
 mkinitcpio -P
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB --modules="tpm" --disable-shim-lock
 grub-mkconfig -o /boot/grub/grub.cfg
